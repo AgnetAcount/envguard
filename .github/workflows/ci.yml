@@ -38,4 +38,4 @@ jobs:
         run: pnpm run build
 
       - name: Run Test Suite
-        run: node --test tests/**/*.test.mjs
+        run: pnpm test
