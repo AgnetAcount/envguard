@@ -7,6 +7,7 @@
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-success.svg)](package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6.svg)](tsconfig.json)
+[![YouTube Shorts](https://img.shields.io/badge/YouTube_Shorts-Watch_Demo-red?logo=youtube)](https://youtube.com/shorts/ZTAoaJsmTxw)
 
 ---
 
