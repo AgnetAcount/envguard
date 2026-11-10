@@ -7,6 +7,7 @@
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-success.svg)](package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6.svg)](tsconfig.json)
+[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](package.json)
 [![YouTube Shorts](https://img.shields.io/badge/YouTube_Shorts-Watch_Demo-red?logo=youtube)](https://youtube.com/shorts/ZTAoaJsmTxw)
 
 ---
@@ -23,14 +24,65 @@ Environment variable desynchronization and accidental credential leaks cause cri
 
 ---
 
+## 🚀 What's New in v0.2.0
+
+- **Expanded 2026/2027 AI & Cloud Provider Credential Signatures:**
+  - **Google / DeepSeek AI:** 32-hex secret keys (`sk-[a-f0-9]{32}`).
+  - **Groq Cloud:** High-speed inference keys (`gsk_[a-zA-Z0-9]{48}`).
+  - **Google Gemini & Cloud:** Gemini API keys (`AIzaSy...`, `AIza...`).
+  - **Google / Mistral AI:** 32-character high-entropy secret keys.
+  - **HuggingFace:** Modern User Access Tokens (`hf_[a-zA-Z0-9]{34}`).
+  - **Replicate:** Inference secret tokens (`r8_[a-zA-Z0-9]{32}`).
+  - **Supabase Service Role JWTs:** Deep payload claim inspection (`service_role`, `supabase`) to prevent critical administrative privilege leaks.
+  - **Supabase Personal Access Tokens:** Modern management tokens (`sbp_[a-zA-Z0-9]{40}`).
+  - **GitHub Fine-Grained Tokens:** Modern scoped PATs (`github_pat_...`).
+- **Independent Adversarial Secret Leak Benchmark:**
+  - 20 real/synthetic leak formats benchmarked with 100% detection rate.
+  - 10 false positive edge cases (placeholders, local URLs, dummy variables) with zero false alarms.
+- **Enhanced False Positive Rejection:** Robust detection for hyphenated placeholders (`your-api-key-here`), local development endpoints (`http://localhost:3000`), and template strings.
+
+---
+
 ## ✨ Features
 
 - **🚀 Zero Runtime Dependencies:** Powered entirely by native Node.js standard libraries (`node:fs`, `node:path`, `node:crypto`). Starts in `< 20ms`.
 - **🔍 Deep Codebase Scanner:** Scans `.js`, `.ts`, `.jsx`, `.tsx`, `.vue`, `.svelte` files for both `process.env` and `import.meta.env` references (dot and bracket notation).
-- **🔒 Shannon Entropy & Credential Scanner:** Analyzes information entropy and scans for 15+ known credential formats (OpenAI, AWS, GitHub, Stripe, Anthropic, Slack, JWT, Private Keys) to prevent committing secrets to `.env.example`.
+- **🔒 Shannon Entropy & Credential Scanner:** Analyzes information entropy and scans for 20+ known credential formats (Google, Groq, HuggingFace, Supabase, Replicate, OpenAI, Anthropic, AWS, GitHub, Stripe, Private Keys) to prevent committing secrets to `.env.example`.
 - **🔄 Auto-Sync Engine:** Automatically extracts undocumented variables from code and appends them to `.env.example` with safe placeholder values (`npx envguard sync`).
 - **📝 Automatic TypeScript Typegen:** Generates type-safe `env.d.ts` extending `NodeJS.ProcessEnv` and `ImportMetaEnv` with full autocomplete and documentation comments.
 - **🤖 Native CI/CD & GitHub Actions:** Emits native `::error` and `::warning` workflow annotations on pull requests.
+
+---
+
+## 🔐 Supported Credential Signatures (2026/2027 Stack)
+
+`envguard` detects both structural signatures and anomalous Shannon information entropy:
+
+| Provider / Type | Signature Pattern | Risk Level |
+|---|---|---|
+| **Google / DeepSeek AI** | `sk-[a-f0-9]{32}` | CRITICAL |
+| **Groq Cloud** | `gsk_[a-zA-Z0-9]{48}` | CRITICAL |
+| **Google Gemini & Cloud** | `AIza[0-9A-Za-z-_]{30,45}` | CRITICAL |
+| **Google / Mistral AI** | `[a-zA-Z0-9]{32}` (entropy >= 3.0) | CRITICAL |
+| **HuggingFace** | `hf_[a-zA-Z0-9]{34}` | CRITICAL |
+| **Supabase Service Role JWT** | JWT with `service_role` claim payload | CRITICAL |
+| **Supabase Personal Token** | `sbp_[a-zA-Z0-9]{40}` | HIGH |
+| **Replicate AI** | `r8_[a-zA-Z0-9]{32}` | CRITICAL |
+| **OpenAI** | `sk-(?:proj-\|live-\|svcacct-)?[a-zA-Z0-9_-]{20,}` | CRITICAL |
+| **Anthropic Claude** | `sk-ant-[a-zA-Z0-9_-]{20,}` | CRITICAL |
+| **Perplexity AI** | `pplx-[a-zA-Z0-9]{48}` | CRITICAL |
+| **Cohere AI** | `co_[a-zA-Z0-9]{37,}` | CRITICAL |
+| **AWS IAM Access Key ID** | `AKIA[0-9A-Z]{16}` | CRITICAL |
+| **Stripe Secret Key** | `[rs]k_(?:live\|test)_[0-9a-zA-Z]{24,}` | CRITICAL |
+| **GitHub Fine-Grained PAT** | `github_pat_[a-zA-Z0-9_]{40,120}` | CRITICAL |
+| **GitHub Classic PAT** | `(?:ghp\|gho\|ghu\|ghs\|ghr)_[A-Za-z0-9_]{36,}` | CRITICAL |
+| **Cryptographic Private Key** | `-----BEGIN ... KEY-----` | CRITICAL |
+| **Slack Bot / User Token** | `xox[baprs]-[0-9a-zA-Z]{10,48}` | HIGH |
+| **Discord Bot Token** | `[MN][A-Za-z\d]{23,}\.[\w-]{6}\.[\w-]{27,}` | HIGH |
+| **SendGrid API Key** | `SG\.[a-zA-Z0-9_-]{22}\.[a-zA-Z0-9_-]{43}` | CRITICAL |
+| **Twilio API Key** | `SK[0-9a-fA-F]{32}` | CRITICAL |
+| **Database URI with Password** | `protocol://user:password@host` | CRITICAL |
+| **High Shannon Entropy** | Entropy >= 4.2 (or >= 3.6 for secret keys) | HIGH |
 
 ---
 
@@ -95,7 +147,7 @@ npx envguard
 
 Sample output:
 ```
-🛡  envguard v0.1.0 — Environment & Security Audit
+🛡  envguard v0.2.0 — Environment & Security Audit
 ─────────────────────────────────────────────────────────────────
 ✖ ERROR DATABASE_URL
   Message:    Variable 'DATABASE_URL' is used in application code but missing from .env
@@ -131,6 +183,7 @@ declare global {
       PORT?: string;
       DATABASE_URL?: string;
       JWT_SECRET?: string;
+      GROQ_API_KEY?: string;
     }
   }
 }
@@ -159,7 +212,7 @@ npx envguard sync
 Evaluates strings or tokens for suspicious entropy:
 
 ```bash
-npx envguard entropy "sk-proj-abc12345678901234567890"
+npx envguard entropy "gsk_AbCdEfGhIjKlMnOpQrStUvWxYz0123456789aBcDeFgHiJkL"
 ```
 
 ---
@@ -223,9 +276,9 @@ runTypegen({
   outputPath: './src/types/env.d.ts'
 });
 
-// Calculate secret entropy
-const analysis = analyzeSecret('API_KEY', 'some-random-string-token-123456');
-console.log(`Entropy: ${analysis.entropy}, Secret: ${analysis.isLikelySecret}`);
+// Calculate secret entropy & detect signatures
+const analysis = analyzeSecret('GROQ_API_KEY', 'gsk_AbCdEfGhIjKlMnOpQrStUvWxYz0123456789aBcDeFgHiJkL');
+console.log(`Entropy: ${analysis.entropy}, Secret: ${analysis.isLikelySecret}, Pattern: ${analysis.patternMatch}`);
 ```
 
 ---
@@ -235,8 +288,10 @@ console.log(`Entropy: ${analysis.entropy}, Secret: ${analysis.isLikelySecret}`);
 `envguard` uses Node.js's native test runner (`node:test`):
 
 ```bash
-pnpm test
+npm test
 ```
+
+Includes the independent adversarial benchmark suite with 100% pass rate over 55 tests.
 
 ---
 

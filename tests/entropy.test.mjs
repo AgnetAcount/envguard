@@ -32,7 +32,51 @@ test('analyzeSecret: flags GitHub Personal Access Token', () => {
   assert.equal(result.patternMatch, 'GitHub Personal Access Token');
 });
 
+test('analyzeSecret: flags Google / DeepSeek API key pattern', () => {
+  const result = analyzeSecret('GOOGLE_AI_KEY', 'sk-0123456789abcdef0123456789abcdef');
+  assert.equal(result.isLikelySecret, true);
+  assert.ok(result.patternMatch?.includes('Google') || result.patternMatch?.includes('DeepSeek'));
+});
+
+test('analyzeSecret: flags Groq API key pattern', () => {
+  const result = analyzeSecret('GROQ_API_KEY', 'gsk_1234567890abcdefghijklmnopqrstuvwxyz1234567890ab');
+  assert.equal(result.isLikelySecret, true);
+  assert.equal(result.patternMatch, 'Groq API Key');
+});
+
+test('analyzeSecret: flags Google Gemini API key pattern', () => {
+  const result = analyzeSecret('GEMINI_API_KEY', 'AIzaSyD-7Xabcdefghijklmnopqrstuvwxyz1');
+  assert.equal(result.isLikelySecret, true);
+  assert.equal(result.patternMatch, 'Google Gemini API Key');
+});
+
+test('analyzeSecret: flags HuggingFace user token', () => {
+  const result = analyzeSecret('HF_TOKEN', 'hf_1234567890abcdefghijklmnopqrstuvwx');
+  assert.equal(result.isLikelySecret, true);
+  assert.equal(result.patternMatch, 'HuggingFace Access Token');
+});
+
+test('analyzeSecret: flags Replicate API token', () => {
+  const result = analyzeSecret('REPLICATE_API_TOKEN', 'r8_1234567890abcdef1234567890abcdef');
+  assert.equal(result.isLikelySecret, true);
+  assert.equal(result.patternMatch, 'Replicate API Token');
+});
+
+test('analyzeSecret: flags Supabase Service Role JWT', () => {
+  const payload = Buffer.from(JSON.stringify({ iss: 'supabase', role: 'service_role' })).toString('base64url');
+  const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${payload}.signature1234567890abcdef1234567890`;
+  const result = analyzeSecret('SUPABASE_SERVICE_ROLE_KEY', token);
+  assert.equal(result.isLikelySecret, true);
+  assert.equal(result.patternMatch, 'Supabase Service Role JWT');
+});
+
 test('analyzeSecret: allows harmless placeholders', () => {
   const result = analyzeSecret('DATABASE_URL', 'your_database_url_here');
   assert.equal(result.isLikelySecret, false);
+});
+
+test('analyzeSecret: allows kebab-case placeholders and local URLs', () => {
+  assert.equal(analyzeSecret('API_KEY', 'your-api-key-here').isLikelySecret, false);
+  assert.equal(analyzeSecret('API_URL', 'http://localhost:3000').isLikelySecret, false);
+  assert.equal(analyzeSecret('EMPTY_VAL', '').isLikelySecret, false);
 });

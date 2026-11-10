@@ -35,7 +35,7 @@ export function formatTerminalReport(result: AuditResult, options: { verbose?: b
   const { summary, issues } = result;
 
   lines.push('');
-  lines.push(`${colors.bold}${colors.cyan}🛡  envguard${colors.reset} ${colors.dim}v0.1.0 — Environment & Security Audit${colors.reset}`);
+  lines.push(`${colors.bold}${colors.cyan}🛡  envguard${colors.reset} ${colors.dim}v0.2.0 — Environment & Security Audit${colors.reset}`);
   lines.push(`${colors.dim}─────────────────────────────────────────────────────────────────${colors.reset}`);
 
   if (issues.length === 0) {
